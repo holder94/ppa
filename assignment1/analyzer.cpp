@@ -28,6 +28,7 @@ class VariableCheckVisitor : public ExprVisitor {
         vector<string> used_variables;
         if (line->expression->type == ExprType::Variable) {
           VarExpr* expr = static_cast<VarExpr*>(line->expression);
+          used_variables = expr->accept(*this);
         }
         else if (line->expression->type == ExprType::Function) {
           FunctionExpr* expr = static_cast<FunctionExpr*>(line->expression);

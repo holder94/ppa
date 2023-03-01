@@ -7,25 +7,6 @@
 
 using namespace std;
 
-const char* get_expr_type(ExprType type) {
-  switch(type) {
-    case ExprType::Function:
-      return "function";
-    case ExprType::Integer:
-      return "integer";
-    case ExprType::Variable:
-      return "variable";
-  }
-}
-
-void print_program(Program program) {
-  // cout << "lines number=" << program.get_lines().size() << endl;
-  for (auto line : program.get_lines()) {
-    printf("line number=%d; expression type=%s; variable=%s\n", line->line_number, get_expr_type(line->expression->type), line->identifier);
-
-  }
-}
-
 class VariableCheckVisitor : public ExprVisitor {
   map<string, int> assignments;
   vector<pair<string, int>> errors;
@@ -37,8 +18,9 @@ class VariableCheckVisitor : public ExprVisitor {
     void visit(Program program) {
       for (auto line : program.get_lines()) {
         string id = line->identifier;
-        // assignments.insert(make_pair(id, line->line_number));
-        assignments[id] = line->line_number;
+        if (assignments.find(id) == assignments.end()) {
+          assignments[id] = line->line_number;
+        }
       }
 
       for (auto line : program.get_lines()) {
@@ -122,15 +104,12 @@ class LineCheckVisitor : public ProgramVisitor {
 int main() {
   Program* program;
   int result = yyparse(&program);
-  cout << "parsing result " << result << endl;
-  print_program(*program);
-
-
   auto line_check_visitor = LineCheckVisitor();
   bool success = program->accept(line_check_visitor);
-  cout << "success=" << success << endl;
 
-  auto var_visitor = VariableCheckVisitor();
-  program->accept(var_visitor);
+  if (success) {
+    auto var_visitor = VariableCheckVisitor();
+    program->accept(var_visitor);
+  }
   return 0;
 }

@@ -1,0 +1,3 @@
+5 y := 7;
+10 x := sum (y, random_choice(42, 17));
+7 y := random_choice(x, 42)

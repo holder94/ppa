@@ -67,13 +67,6 @@ class VariableCheckVisitor : public ExprVisitor {
     }
 };
 
-void print_set(set<int> s) {
-  for (int n : s) {
-    cout << n << " ";
-  }
-  cout << endl;
-}
-
 class LineCheckVisitor : public ProgramVisitor {
   set<int> lines;
   set<int> errors;
